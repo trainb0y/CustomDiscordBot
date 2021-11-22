@@ -18,13 +18,15 @@ class Reactions(commands.Cog):
         <emoji>: <@role>
         and returns a dict of {emoji:role}
         """
+        roles = {}
         for line in message.content.split("\n"):
             try:
                 emoji, role = line.split(": ")
+                roles[emoji] = role
             except ValueError:
                 # There wern't two to unpack
                 continue
-            print(f"e:{emoji}, r:{role}")
+        return roles
 
 
 
