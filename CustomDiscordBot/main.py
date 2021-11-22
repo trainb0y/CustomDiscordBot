@@ -2,7 +2,7 @@ import os, logging, reactions
 from discord.ext import commands
 from dotenv import load_dotenv
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 bot = commands.Bot(command_prefix="$")
 
 load_dotenv()
