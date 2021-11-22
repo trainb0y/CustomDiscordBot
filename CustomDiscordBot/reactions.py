@@ -26,7 +26,9 @@ class Reactions(commands.Cog):
         roles = []
         for line in message.content.split("\n"):
             try:
-                emoji, role = line.split(":")
+                emoji, role = line.split(": ") # Needs a space afterward. Kind of a bad way to do this but we don't want
+                # it to split on custom emoji names, which are formatted <:name:id>. Could maybe use regex?
+                # TODO: clean this up
                 emoji = emoji.strip()  # Remove any whitespace
                 role = role.strip().replace("<@&", "").replace(">", "")  # There's probably a better way to parse this
                 role = message.guild.get_role(int(role))  # Attempt to get the Role object
@@ -47,6 +49,7 @@ class Reactions(commands.Cog):
         Give the specified role to a user when they react to a role message
         """
         logging.debug("Someone reacted to a message, checking for reaction role")
+        print(str(payload.emoji))
         emoji_role_pairs = self.parse_message(
             await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id))
         for pair in emoji_role_pairs:
