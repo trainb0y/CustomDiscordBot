@@ -12,8 +12,33 @@ class Reactions(commands.Cog):
         self.bot = bot
         self.reaction_role_pairs = {}
 
+    def parse_message(self, message: discord.Message):
+        """
+        Parses a message for any lines formatted
+        <emoji>: <@role>
+        and returns a dict of {emoji:role}
+        """
+        for line in message.content.split("\n"):
+            try:
+                emoji, role = line.split(": ")
+            except ValueError:
+                # There wern't two to unpack
+                continue
+            print(f"e:{emoji}, r:{role}")
+
+
+
     @commands.Cog.listener("on_raw_reaction_add")
     async def user_reacted(self, payload: discord.RawReactionActionEvent):
         message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
         user = payload.member
-        print(f"{user.name} reacted to {message} with {payload.emoji}")
+        self.parse_message(message)
+
+
+    @commands.Cog.listener("on_raw_reaction_remove")
+    async def user_unreacted(self, payload: discord.RawReactionActionEvent):
+        message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+        user = payload.member
+        self.parse_message(message)
+
+
