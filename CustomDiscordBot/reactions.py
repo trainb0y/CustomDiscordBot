@@ -46,18 +46,22 @@ class Reactions(commands.Cog):
         """
         Give the specified role to a user when they react to a role message
         """
+        logging.debug("Someone reacted to a message, checking for reaction role")
         emoji_role_pairs = self.parse_message(
             await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id))
         for pair in emoji_role_pairs:
             if str(payload.emoji) == pair[0]:  # Str it so custom emoji should work
                 await payload.member.add_roles(pair[1],reason="Reaction roles")
                 logging.info(f"Gave role {pair[1]} to user {payload.member.name}")
+                return
+        logging.debug("Didn't find a matching reaction role")
 
     @commands.Cog.listener("on_raw_reaction_remove")
     async def user_unreacted(self, payload: discord.RawReactionActionEvent):
         """
         Remove the specified role from a user when they remove their reaction from a role message
         """
+        logging.debug("Someone removed a reaction, checking for reaction role")
         emoji_role_pairs = self.parse_message(
             await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id))
         # Payload.member doesn't exist for on_raw_reaction_remove, see
@@ -68,3 +72,5 @@ class Reactions(commands.Cog):
             if str(payload.emoji) == pair[0]:
                 await member.remove_roles(pair[1],reason="Reaction roles")
                 logging.info(f"Removed role {pair[1]} from user {member.name}")
+                return
+        logging.debug("Didn't find a matching reaction role")
