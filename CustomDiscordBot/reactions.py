@@ -12,6 +12,8 @@ class Reactions(commands.Cog):
         self.bot = bot
         self.reaction_role_pairs = {}
 
-    @commands.Cog.listener("on_reaction_add")
-    async def user_reacted(self, reaction: discord.Reaction, user: discord.User):
-        print(f"{user.name} reacted to {reaction.message} with {reaction.emoji}")
+    @commands.Cog.listener("on_raw_reaction_add")
+    async def user_reacted(self, payload: discord.RawReactionActionEvent):
+        message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+        user = payload.member
+        print(f"{user.name} reacted to {message} with {payload.emoji}")
